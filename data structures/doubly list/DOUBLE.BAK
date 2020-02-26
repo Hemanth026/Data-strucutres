@@ -1,0 +1,169 @@
+/* DOUBLY LINKED LIST */
+
+#include<stdio.h>
+#include<alloc.h>
+
+struct node
+{
+ int info;
+ struct node *llink;
+ struct node *rlink;
+};
+
+typedef struct node * NODE;
+
+NODE getnode()
+{
+ NODE x;
+ x=(NODE)malloc(sizeof(struct node));
+ if(x==NULL)
+ {
+    printf("Out of memory");
+    exit(0);
+ }
+ return x;
+}
+
+NODE insert(NODE first,int ch)
+ {
+  NODE temp,pre,cur;
+  int val;
+  temp=getnode();
+  if(first==NULL)
+  {
+   printf("First entry\n Enter an integer\n");
+   scanf("%d",&temp->info);
+   temp->llink=NULL;
+   temp->rlink=NULL;
+   first=temp;
+   return first;
+  }
+
+  if(ch==1)
+  {
+   printf("Enter the integer\n");
+    scanf("%d",&temp->info);
+    temp->llink=NULL;
+    temp->rlink=first;
+    first->llink=temp;
+    first=temp;
+  }
+
+  else if(ch==2)
+  {
+   printf("Enter the key value :");
+   scanf("%d",&val);
+   if(val==first->info)
+   return insert(first,1);
+   printf("Enter the integer\n");
+   scanf("%d",&temp->info);
+   for(cur=first;  (cur!=NULL) && (val!=cur->info); pre=cur,cur=cur->rlink);
+   if(cur!=NULL)
+   {
+    temp->llink=pre;
+    temp->rlink=cur;
+    pre->rlink=temp;
+    cur->llink=temp;
+   }
+   else
+    printf("Invalid position\n");
+  }
+  return first;
+}
+
+
+NODE del(NODE first)
+{int id;
+ NODE temp,cur,pre;
+  if(first==NULL)
+ {
+  printf("List empty\n");
+  return first;
+ }
+
+ printf("\nEnter the key valude:");
+ scanf("%d",&id);
+ for(temp=first;(temp!=NULL) && (id!=temp->info); temp=temp->rlink);
+ if(temp!=NULL)
+ {
+  printf("Deleted integer is : %d\n",temp->info);
+   if(temp==first)
+   {
+     if(first->rlink==NULL) /* if the list contains only one node and */
+      first=NULL;           /* if the id match with that node */
+     else
+     {
+      first=first->rlink;  /* if the id matches with the value of first node*/
+      first->llink=NULL;
+     }
+   }
+
+   else
+     if(temp->rlink==NULL)  /* if the node to be deleted is the last node*/
+     { pre=temp->llink;
+      pre->rlink=NULL; }
+     else
+     {
+       pre=temp->llink;
+       cur=temp->rlink;
+       pre->rlink=cur;    /* middle of the list */
+       cur->llink=pre;
+     }
+     free(temp);
+  }
+  else
+   printf("invalid key number\n");
+   return first;
+}
+
+
+void display(NODE  first)
+{
+ NODE temp;
+ if(first==NULL)
+ {
+  printf("List empty\n");
+  return;
+ }
+ else
+ {
+ printf("\n CONTENTS OF THE LIST IS \n");
+ for(temp=first;temp!=NULL;temp=temp->rlink)
+ printf("%d\t",temp->info);
+ }
+}
+
+
+main()
+{
+ NODE first=NULL;
+ int choice,ch;
+ clrscr();
+ for(;;)
+ {
+  printf("\n1:INSERT\n2: DELETE\n3: DISPLAY\n");
+  printf("Enter your choice :\n");
+  scanf("%d",&choice);
+  switch(choice)
+  {
+   case 1: printf("\nSELECT TO INSERT AT :\n1.front end\n2: at the left\n");
+	   printf("Enter your choice :\n");
+	   scanf("%d",&ch);
+	   printf("\n");
+	   switch(ch)
+	   {
+	     case 1:
+	     case 2:first=insert(first,ch);
+		    break;
+	     default: printf("Wrong entry\n");
+		      break;
+	   }
+	   break;
+   case 2: first=del(first);
+	   break;
+   case 3: display(first);
+	   break;
+   default:exit(0);
+  }
+ }
+}
